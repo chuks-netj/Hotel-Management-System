@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reg Form</title>
+  </head>
+  <body>
+    <h2>Login Form</h2>
+
+    <form action="UserLogin" method="post" id="loginform">
+      <label for="Email">Email</label><br />
+      <input type="email" id="Email" name="Email" required /><br /><br />
+
+      <label for="Password">Password</label><br />
+      <input
+        type="password"
+        id="Password"
+        name="Password"
+        required
+      /><br /><br />
+
+      <button id="submit" type="submit">Login</button>
+    </form>
+
+    <script src="./login.js"></script>
+
+    <!-- <script>
+      // Example: Function to handle the form submission
+      document
+        .querySelector("form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Get form data
+          const formData = new FormData(this);
+          const data = {};
+          formData.forEach((value, key) => {
+            data[key] = value;
+          });
+
+          // Simulate form submission and check for successful registration
+          // Replace this with your actual AJAX request to the backend
+          const registrationSuccessful = true; // Simulated result, replace with actual backend check
+
+          if (registrationSuccessful) {
+            // Redirect to login page after successful registration
+            window.location.href = "/Rooms.html"; // Replace with the actual login page URL
+          } else {
+            alert("Registration failed, please try again.");
+          }
+        });
+    </script> -->
+  </body>
+</html>

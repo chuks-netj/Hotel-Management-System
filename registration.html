@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hello, Kindly Register</title>
+    <link rel="stylesheet" href="form.css" />
+  </head>
+  <body>
+    <h1>Application Form</h1>
+
+    <form action="AddUser" method="post" id="applyForm">
+      <label for="FirstName">FirstName</label>
+      <input type="text" id="FirstName" name="FirstName" required /><br /><br />
+
+      <label for="LastName">LastName</label>
+      <input type="text" id="LastName" name="LastName" required /><br /><br />
+
+      <label for="UserName">UserName</label>
+      <input type="text" id="UserName" name="UserName" required /><br /><br />
+
+      <label for="Email">Email</label>
+      <input type="email" id="Email" name="Email" required /><br /><br />
+
+      <label for="Password">Password</label>
+      <input
+        type="password"
+        id="Password"
+        name="Password"
+        required
+      /><br /><br />
+
+      <label for="PhoneNumber">PhoneNumber</label>
+      <input
+        type="tel"
+        id="PhoneNumber"
+        name="PhoneNumber"
+        required
+      /><br /><br />
+
+      <button id="submit" type="submit">
+        <!-- <button
+        id="submit"
+        type="submit"
+        onclick="location.href='appreciation.html'"
+      > -->
+        Apply
+      </button>
+    </form>
+
+    <script src="/registration.js"></script>
+
+    <script>
+      // Example: Function to handle the form submission
+      document
+        .querySelector("form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault(); // Prevent default form submission
+
+          // Get form data
+          const formData = new FormData(this);
+          const data = {};
+          formData.forEach((value, key) => {
+            data[key] = value;
+          });
+
+          // Simulate form submission and check for successful registration
+          // Replace this with your actual AJAX request to the backend
+          const registrationSuccessful = true; // Simulated result, replace with actual backend check
+
+          if (registrationSuccessful) {
+            // Redirect to login page after successful registration
+            window.location.href = "/login.html"; // Replace with the actual login page URL
+          } else {
+            alert("Registration failed, please try again.");
+          }
+        });
+    </script>
+    <!-- Link to the JavaScript file -->
+  </body>
+</html>
