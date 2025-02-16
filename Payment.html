@@ -4,6 +4,33 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Payment Page</title>
+    <link rel="stylesheet" href="Payment.css" />
+  </head>
+  <body>
+    <h2>Make a Payment</h2>
+    <form id="paymentForm">
+      <input type="text" id="Name" placeholder="Enter Name" required />
+      <input type="email" id="Email" placeholder="Enter Email" required />
+      <input type="number" id="Amount" placeholder="Enter amount" required />
+      <button type="submit">Pay Now</button>
+    </form>
+
+    <!-- ✅ Load the script at the end so it runs after the page loads -->
+    <script src="Payment.js"></script>
+    <script>
+      // ✅ Call checkPaymentStatus() to verify payment when the user returns
+      checkPaymentStatus();
+    </script>
+  </body>
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Payment Page</title>
+    <link rel="stylesheet" href="Payment.css" />
     <script src="Payment.js"></script>
   </head>
   <body>
@@ -15,4 +42,4 @@
       <button type="submit">Pay Now</button>
     </form>
   </body>
-</html>
+</html> -->
