@@ -1,50 +1,64 @@
-// async function fetchUserName(userId) {
-//   try {
-//     const response = await fetch(
-//       `https://localhost:7261/api/UserProfile/${userId}`
-//     );
-//     if (!response.ok) {
-//       throw new Error("User not found");
-//     }
-
-//     const data = await response.json();
-//     document.getElementById("userName").textContent = data.userName;
-//   } catch (error) {
-//     console.error("Error fetching user data:", error);
-//     document.getElementById("userName").textContent = "Guest";
-//   }
-// }
-
 async function fetchAvailableRooms() {
   try {
     const response = await fetch("https://localhost:7261/api/Room/available");
-    const rooms = await response.json();
+    if (!response.ok) throw new Error("Failed to fetch rooms");
 
+    const rooms = await response.json();
+    // console.log(rooms);
     let roomsHtml = "";
+
+    // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split("T")[0];
+
     rooms.forEach((room) => {
       roomsHtml += `
         <div class="room">
             <h3>${room.roomType}</h3>
             <p>Available Spaces: <span id="spaces-${room.roomId}">${room.capacity}</span></p>
             <p>Price per night: $${room.price}</p>
-            <button onclick="makeReservation(${room.roomId})">Make Reservation</button>
+
+            <label for="CheckInDate-${room.roomId}">Check-in Date:</label>
+            <input type="date" id="CheckInDate-${room.roomId}" min="${today}">
+
+            <label for="CheckOutDate-${room.roomId}">Check-out Date:</label>
+            <input type="date" id="CheckOutDate-${room.roomId}" min="${today}">
+
+            <button onclick="reserveRoom(${room.roomId}, '${room.roomType}', ${room.price})">Make Reservation</button>
         </div>
       `;
     });
+
     document.getElementById("rooms").innerHTML = roomsHtml;
   } catch (error) {
     console.error("Error fetching rooms:", error);
   }
 }
 
-// Function to handle the "Make Reservation" button click
-function makeReservation(roomId) {
-  window.location.href = `Reservation.html?roomId=${roomId}`;
+// Save selected room & dates, then go to reservation page
+function reserveRoom(roomId, roomType, price) {
+  const checkInDate = document.getElementById(`CheckInDate-${roomId}`).value;
+  const checkOutDate = document.getElementById(`CheckOutDate-${roomId}`).value;
+
+  if (!checkInDate || !checkOutDate) {
+    alert("Please select both check-in and check-out dates.");
+    return;
+  }
+
+  if (new Date(checkInDate) >= new Date(checkOutDate)) {
+    alert("Check-out date must be after check-in date.");
+    return;
+  }
+
+  // Store data in localStorage
+  localStorage.setItem("selectedRoomId", roomId);
+  localStorage.setItem("selectedRoomType", roomType);
+  localStorage.setItem("selectedRoomPrice", price);
+  localStorage.setItem("checkInDate", checkInDate);
+  localStorage.setItem("checkOutDate", checkOutDate);
+
+  // Redirect to reservation page
+  window.location.href = "reservation.html";
 }
 
-// Change this to dynamically retrieve the user's ID (e.g., from localStorage, session, or a backend authentication system)
-// const Id = 1;
-
-// Fetch user data and rooms when the page loads
-// fetchUserName(Id);
-fetchAvailableRooms();
+// Load available rooms when the page is ready
+document.addEventListener("DOMContentLoaded", fetchAvailableRooms);

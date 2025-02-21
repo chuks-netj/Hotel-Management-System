@@ -8,38 +8,39 @@
   </head>
   <body>
     <h2>Make a Payment</h2>
+    <!-- <p>Room Type: <span id="roomType"></span></p>
+    <p>Total Amount: <span id="totalAmount"></span></p> -->
     <form id="paymentForm">
-      <input type="text" id="Name" placeholder="Enter Name" required />
-      <input type="email" id="Email" placeholder="Enter Email" required />
-      <input type="number" id="Amount" placeholder="Enter amount" required />
+      <input
+        type="text"
+        id="Name"
+        name="Name"
+        placeholder="Enter Name"
+        autocomplete="name"
+        required
+      />
+      <input
+        type="email"
+        id="Email"
+        name="Email"
+        placeholder="Enter Email"
+        autocomplete="email"
+        required
+      />
+      <input
+        type="number"
+        id="Amount"
+        name="amount"
+        placeholder="Enter amount"
+        required
+      />
+      <!-- <input type="hidden" id="RoomType" />
+      <input type="hidden" id="UserId" />
+      <input type="hidden" id="RoomId" />
+      <input type="hidden" id="ReservationId" /> -->
       <button type="submit">Pay Now</button>
     </form>
 
-    <!-- ✅ Load the script at the end so it runs after the page loads -->
-    <script src="Payment.js"></script>
-    <script>
-      // ✅ Call checkPaymentStatus() to verify payment when the user returns
-      checkPaymentStatus();
-    </script>
+    <script src="payment.js"></script>
   </body>
 </html>
-
-<!-- <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Payment Page</title>
-    <link rel="stylesheet" href="Payment.css" />
-    <script src="Payment.js"></script>
-  </head>
-  <body>
-    <h2>Make a Payment</h2>
-    <form id="paymentForm">
-      <input type="text" id="Name" placeholder="Enter Name" required />
-      <input type="email" id="Email" placeholder="Enter Email" required />
-      <input type="number" id="Amount" placeholder="Enter amount" required />
-      <button type="submit">Pay Now</button>
-    </form>
-  </body>
-</html> -->

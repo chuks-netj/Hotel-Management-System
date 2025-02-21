@@ -1,200 +1,65 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const urlParams = new URLSearchParams(window.location.search);
-  const roomId = urlParams.get("roomId");
+console.log("reservation.js loaded!");
+document.addEventListener("DOMContentLoaded", async function () {
+  //const userId = localStorage.getItem("selectedRoomId");
+  const roomId = localStorage.getItem("selectedRoomId");
+  const checkInDate = localStorage.getItem("checkInDate");
+  const checkOutDate = localStorage.getItem("checkOutDate");
 
-  if (!roomId) {
-    alert("Invalid reservation. Redirecting...");
-    window.location.href = "room.html";
+  if (!roomId || !checkInDate || !checkOutDate) {
+    alert("Invalid reservation data. Redirecting...");
+    window.location.href = "rooms.html";
     return;
   }
 
-  // Fetch room details
-  fetch(`https://localhost:7261/api/Room/${roomId}`)
-    .then((response) => response.json())
-    .then((room) => {
-      document.getElementById("roomType").innerText = room.roomType;
-      document.getElementById("roomPrice").innerText = room.price;
-      document.getElementById("roomCapacity").innerText = room.capacity;
-    })
-    .catch((error) => {
-      console.error("Error fetching room details:", error);
-    });
+  try {
+    const response = await fetch(`https://localhost:7261/api/Room/${roomId}`);
+    if (!response.ok) throw new Error("Failed to fetch room details");
+
+    const room = await response.json();
+
+    // Calculate total price
+    const startDate = new Date(checkInDate);
+    const endDate = new Date(checkOutDate);
+    const nights = Math.ceil((endDate - startDate) / (1000 * 3600 * 24));
+    const totalPrice = room.price * nights;
+
+    // Update the UI
+    document.getElementById("roomType").textContent = room.roomType;
+    document.getElementById("roomPrice").textContent = room.price;
+    document.getElementById("roomCapacity").textContent = room.capacity;
+    document.getElementById("totalPrice").textContent = totalPrice;
+    document.getElementById("checkInDate").textContent = checkInDate;
+    document.getElementById("checkOutDate").textContent = checkOutDate;
+
+    // Save reservation details for payment page
+    const reservationDetails = {
+      roomId,
+      roomType: room.roomType,
+      pricePerNight: room.price,
+      totalPrice,
+      checkInDate,
+      checkOutDate,
+    };
+    // Log before saving
+    console.log("Attempting to save reservation data:", reservationDetails);
+    localStorage.setItem("reservation", JSON.stringify(reservationDetails));
+  } catch (error) {
+    console.error("Error loading room details:", error);
+    alert("Error loading room details. Please try again.");
+  }
 });
 
-// Function to handle reservation confirmation and redirect to payment
+// Function to confirm reservation and redirect to payment
 function confirmReservation() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const roomId = urlParams.get("roomId");
+  const reservationData = localStorage.getItem("reservation");
 
-  const CheckInDate = document.getElementById("CheckInDate").value;
-  const CheckOutDate = document.getElementById("CheckOutDate").value;
-
-  if (!CheckInDate || !CheckOutDate) {
-    alert("Please select both check-in and check-out dates.");
+  if (!reservationData) {
+    alert("Reservation details are missing. Please try again.");
     return;
   }
+  console.log("Stored reservation data before redirect:", reservationData);
 
-  if (new Date(CheckInDate) >= new Date(CheckOutDate)) {
-    alert("Check-out date must be after check-in date.");
-    return;
-  }
-
-  // Redirect to payment page with room and date details
-  window.location.href = `Payment.html?roomId=${roomId}&checkIn=${CheckInDate}&checkOut=${CheckOutDate}`;
+  alert("Reservation confirmed! Redirecting to payment...");
+  //localStorage.setItem("reservation", JSON.stringify(reservationDetails));
+  window.location.href = "payment.html";
 }
-
-//LATEST RESERVATION JS
-// document.addEventListener("DOMContentLoaded", function () {
-//   const urlParams = new URLSearchParams(window.location.search);
-//   const roomId = urlParams.get("roomId");
-
-//   if (!roomId) {
-//     alert("Invalid reservation. Redirecting...");
-//     window.location.href = "availableRooms.html";
-//     return;
-//   }
-
-//   fetch(`https://localhost:7261/api/Room/${roomId}`)
-//     .then((response) => response.json())
-//     .then((room) => {
-//       document.getElementById("roomType").innerText = room.roomType;
-//       document.getElementById("roomPrice").innerText = room.price;
-//       document.getElementById("roomCapacity").innerText = room.capacity;
-//     })
-//     .catch((error) => {
-//       console.error("Error fetching room details:", error);
-//     });
-// });
-
-// function confirmReservation() {
-//   const urlParams = new URLSearchParams(window.location.search);
-//   const roomId = urlParams.get("roomId");
-
-//   // Redirect to payment page with necessary details
-//   window.location.href = `Payment.html?roomId=${roomId}`;
-// }
-
-// document.addEventListener("DOMContentLoaded", function () {
-//   const urlParams = new URLSearchParams(window.location.search);
-//   const roomId = urlParams.get("roomId");
-
-//   if (!roomId) {
-//     alert("Invalid reservation. Redirecting...");
-//     window.location.href = "availableRooms.html";
-//     return;
-//   }
-
-//   fetch(`https://localhost:7261/api/Room/${roomId}`)
-//     .then((response) => response.json())
-//     .then((room) => {
-//       document.getElementById("roomType").innerText = room.roomType;
-//       document.getElementById("roomPrice").innerText = room.price;
-//       document.getElementById("roomCapacity").innerText = room.capacity;
-//     })
-//     .catch((error) => {
-//       console.error("Error fetching room details:", error);
-//     });
-// });
-
-// function confirmReservation() {
-//   fetch("https://localhost:7292/Payment") // MVC Controller Action
-//     .then((response) => response.text()) // Fetch HTML content
-//     .then((html) => {
-//       document.getElementById("paymentSection").innerHTML = html; // Inject content
-//     })
-//     .catch((error) => console.error("Error fetching payment page:", error));
-// }
-
-// function redirectToPayment() {
-//   const urlParams = new URLSearchParams(window.location.search);
-//   const roomId = urlParams.get("roomId");
-
-//   if (!roomId) {
-//     alert("Invalid reservation. Please try again.");
-//     return;
-//   }
-
-//   // Prepare payment details (modify as needed)
-//   const paymentDetails = {
-//     //meant to be a fetch request
-//     Amount: 5000, // Example amount, replace with actual room price
-//     Email: "user@example.com", // Replace with the logged-in user's email
-//     Name: "John Doe", // Replace with the logged-in user's name
-//   };
-
-//   fetch("https://localhost:7040/Donate/Index", {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify(paymentDetails),
-//   })
-//     .then((response) => response.text()) // MVC might return an HTML redirect link
-//     .then((url) => {
-//       if (url.includes("https://checkout.paystack.com")) {
-//         window.location.href = url; // Redirect user to Paystack for payment
-//       } else {
-//         alert("Payment initialization failed!");
-//         console.error("Unexpected response:", url);
-//       }
-//     })
-//     .catch((error) => {
-//       console.error("Payment error:", error);
-//       alert("An error occurred while processing payment.");
-//     });
-// }
-
-// function confirmReservation() {
-//   const urlParams = new URLSearchParams(window.location.search);
-//   const roomId = urlParams.get("roomId");
-
-//   fetch(`https://localhost:7261/api/ReservationContoller/${roomId}/reserve`, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       if (data.message.includes("successful")) {
-//         alert("Reservation confirmed! Redirecting to payment...");
-//         redirectToPayment(); // Redirect user to the payment page
-//       } else {
-//         alert("Error reserving room.");
-//       }
-//     })
-//     .catch((error) => {
-//       console.error("Reservation error:", error);
-//     });
-// }
-
-// function redirectToPayment() {
-//   const urlParams = new URLSearchParams(window.location.search);
-//   const roomId = urlParams.get("roomId");
-
-//   if (!roomId) {
-//     alert("Invalid reservation. Please try again.");
-//     return;
-//   }
-
-//   // Redirect user to the payment service with roomId
-//   window.location.href = `https://localhost:7040`;
-// }
-
-// function confirmReservation() {
-//   const urlParams = new URLSearchParams(window.location.search);
-//   const roomId = urlParams.get("roomId");
-
-//   fetch(`https://localhost:7261/api/Reservation/${roomId}`, {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       if (data.message.includes("successful")) {
-//         alert("Reservation confirmed!");
-//         window.location.href = "confirmation.html";
-//       } else {
-//         alert("Error reserving room.");
-//       }
-//     })
-//     .catch((error) => {
-//       console.error("Reservation error:", error);
-//     });
-// }

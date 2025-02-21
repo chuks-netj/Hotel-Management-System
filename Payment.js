@@ -1,111 +1,122 @@
+console.log("payment.js loaded!");
+console.log("Retrieved reservation data:", localStorage.getItem("reservation"));
+
+// Wait until DOM is fully loaded
 document.addEventListener("DOMContentLoaded", function () {
+  const reservationData = JSON.parse(localStorage.getItem("reservation"));
+  const userName = localStorage.getItem("userName");
+  const userEmail = localStorage.getItem("userEmail");
+
+  if (
+    !reservationData ||
+    !reservationData.roomId ||
+    !reservationData.totalPrice
+  ) {
+    alert("Reservation details are missing. Please make a reservation first.");
+    window.location.href = "rooms.html"; // Redirect back to rooms page
+    return;
+  }
+
+  console.log("Autofilling Amount:", reservationData.totalPrice);
+  console.log("Stored userName:", userName);
+  console.log("Stored userEmail:", userEmail);
+
+  const nameField = document.getElementById("Name");
+  const emailField = document.getElementById("Email");
+  const amountField = document.getElementById("Amount");
+
+  if (!nameField || !emailField || !amountField) {
+    console.error("One or more input fields not found!");
+    return;
+  }
+
+  if (!nameField.value) nameField.value = userName || "";
+  if (!emailField.value) emailField.value = userEmail || "";
+  amountField.value = reservationData.totalPrice;
+
+  setTimeout(() => {
+    nameField.dispatchEvent(new Event("input", { bubbles: true }));
+    emailField.dispatchEvent(new Event("input", { bubbles: true }));
+    amountField.dispatchEvent(new Event("input", { bubbles: true }));
+  }, 500);
+
   document
     .getElementById("paymentForm")
     .addEventListener("submit", async function (event) {
-      event.preventDefault(); // Prevent default form submission
+      event.preventDefault();
 
-      let Name = document.getElementById("Name").value.trim();
-      let Email = document.getElementById("Email").value.trim();
-      let Amount = parseFloat(document.getElementById("Amount").value);
+      let Name = nameField.value.trim();
+      let Email = emailField.value.trim();
+      let Amount = parseFloat(amountField.value || "0");
+
+      console.log("Form Data Before Submission:", { Name, Email, Amount });
 
       if (!Name || !Email || Amount <= 0) {
         alert("Please fill in all fields correctly.");
         return;
       }
 
-      try {
-        let response = await fetch(
-          "https://localhost:7261/api/Payment/InitializePayment",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ Name, Email, Amount }),
-          }
-        );
-
-        let data = await response.json();
-
-        if (data.paymentUrl) {
-          // ✅ Store the reference in localStorage
-          localStorage.setItem("paymentRef", data.reference);
-          window.location.href = data.paymentUrl; // Redirect to Paystack
-        } else {
-          alert(data.message || "Payment failed");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Something went wrong. Please try again.");
-      }
+      await InitializePayment(Name, Email, Amount);
     });
-  // ✅ Check payment status when user returns
-  checkPaymentStatus();
 });
 
-// ✅ Function to check payment status
-async function checkPaymentStatus() {
-  let paymentRef = localStorage.getItem("paymentRef");
-  if (!paymentRef) return;
+// Function to process payment
+async function InitializePayment(Name, Email, Amount) {
+  const reservationData = JSON.parse(localStorage.getItem("reservation"));
+  const userId = localStorage.getItem("userId");
+
+  if (
+    !reservationData ||
+    !reservationData.roomId ||
+    !reservationData.totalPrice
+  ) {
+    alert("Reservation details are missing. Please try again.");
+    return;
+  }
+
+  if (!userId) {
+    alert("User ID is missing. Please log in again.");
+    return;
+  }
+
+  // ✅ Define trxRef before using it
+  const TrxRef = `HMS-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+
+  const payload = {
+    userId: parseInt(userId, 10),
+    roomId: parseInt(reservationData.roomId, 10),
+    amount: parseFloat(reservationData.totalPrice), // Ensure the correct amount is used
+    email: Email,
+    name: Name,
+    roomType: reservationData.roomType, // Ensure this value exists
+    trxRef: TrxRef,
+  };
+
+  console.log("🔹 Sending payment request:", payload);
 
   try {
-    let response = await fetch(
-      `https://localhost:7261/api/Payment/paystack-webhook`,
+    const response = await fetch(
+      "https://localhost:7261/api/Payment/initialize",
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reference: paymentRef }),
+        body: JSON.stringify(payload),
       }
     );
 
-    let data = await response.json();
+    const result = await response.json();
 
-    if (data.reference && data.reservationId) {
-      window.location.href = `success.html?reference=${data.reference}&reservationId=${data.Id}`;
+    console.log("Full API Response:", response);
+    console.log("Server response:", result);
+
+    if (response.ok && result.paymentUrl) {
+      window.location.href = result.paymentUrl; // Redirect to Paystack
     } else {
-      window.location.href = "failed.html";
+      console.error("Payment initialization failed:", result);
+      alert(result.message || "Failed to initialize payment.");
     }
   } catch (error) {
-    console.error("Error checking payment:", error);
-    window.location.href = "failed.html";
-  } finally {
-    localStorage.removeItem("paymentRef");
+    console.error("Error initializing payment:", error);
+    alert("An error occurred. Please try again.");
   }
 }
-
-// document.addEventListener("DOMContentLoaded", function () {
-//   document
-//     .getElementById("paymentForm")
-//     .addEventListener("submit", async function (event) {
-//       event.preventDefault(); // 🔴 Prevent default form submission
-
-//       let Name = document.getElementById("Name").value.trim();
-//       let Email = document.getElementById("Email").value.trim();
-//       let Amount = parseFloat(document.getElementById("Amount").value);
-
-//       if (!Name || !Email || Amount <= 0) {
-//         alert("Please fill in all fields correctly.");
-//         return;
-//       }
-
-//       try {
-//         let response = await fetch(
-//           "https://localhost:7261/api/Payment/InitializePayment",
-//           {
-//             method: "POST",
-//             headers: { "Content-Type": "application/json" },
-//             body: JSON.stringify({ Name, Email, Amount }),
-//           }
-//         );
-
-//         let data = await response.json();
-
-//         if (data.paymentUrl) {
-//           window.location.href = data.paymentUrl; // ✅ Redirect to Paystack
-//         } else {
-//           alert(data.message || "Payment failed");
-//         }
-//       } catch (error) {
-//         console.error("Error:", error);
-//         alert("Something went wrong. Please try again.");
-//       }
-//     });
-// });
