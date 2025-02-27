@@ -1,6 +1,17 @@
-console.log("reservation.js loaded!");
+const isVisuallyImpaired =
+  localStorage.getItem("isVisuallyImpaired") === "true";
+
+// Text-to-Speech function
+function speak(text) {
+  if (isVisuallyImpaired && "speechSynthesis" in window) {
+    const speech = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(speech);
+  } else {
+    console.log("Text-to-Speech is disabled or not supported.");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", async function () {
-  //const userId = localStorage.getItem("selectedRoomId");
   const roomId = localStorage.getItem("selectedRoomId");
   const checkInDate = localStorage.getItem("checkInDate");
   const checkOutDate = localStorage.getItem("checkOutDate");
@@ -40,12 +51,18 @@ document.addEventListener("DOMContentLoaded", async function () {
       checkInDate,
       checkOutDate,
     };
-    // Log before saving
+
     console.log("Attempting to save reservation data:", reservationDetails);
     localStorage.setItem("reservation", JSON.stringify(reservationDetails));
+
+    // Text-to-Speech feedback (only if enabled)
+    speak(
+      `Room type: ${room.roomType}. Price per night: $${room.price}. Available Spaces: ${room.capacity}. Total price: $${totalPrice}. Check-in-Date: ${checkInDate}. Check-out-Date: ${checkOutDate}`
+    );
   } catch (error) {
     console.error("Error loading room details:", error);
     alert("Error loading room details. Please try again.");
+    speak("Error loading room details. Please try again.");
   }
 });
 
@@ -55,11 +72,13 @@ function confirmReservation() {
 
   if (!reservationData) {
     alert("Reservation details are missing. Please try again.");
+    speak("Reservation details are missing. Please try again.");
     return;
   }
-  console.log("Stored reservation data before redirect:", reservationData);
 
+  console.log("Stored reservation data before redirect:", reservationData);
   alert("Reservation confirmed! Redirecting to payment...");
-  //localStorage.setItem("reservation", JSON.stringify(reservationDetails));
+  speak("Reservation confirmed! Redirecting to payment page.");
+
   window.location.href = "payment.html";
 }

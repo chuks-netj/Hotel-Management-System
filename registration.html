@@ -77,5 +77,15 @@
         });
     </script>
     <!-- Link to the JavaScript file -->
+
+    <script>
+      // Check if Text-to-Speech is enabled (based on localStorage from index.html)
+      const isVisuallyImpaired =
+        localStorage.getItem("isVisuallyImpaired") === "true";
+
+      if (isVisuallyImpaired) {
+        document.body.classList.add("tts-enabled");
+      }
+    </script>
   </body>
 </html>

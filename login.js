@@ -1,3 +1,17 @@
+// Check if Text-to-Speech (TTS) is enabled
+const isVisuallyImpaired =
+  localStorage.getItem("isVisuallyImpaired") === "true";
+
+// Speak function if TTS is enabled
+function speak(text) {
+  if ("speechSynthesis" in window && isVisuallyImpaired) {
+    const speech = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(speech);
+  } else {
+    console.log("Text-to-Speech not supported or not enabled.");
+  }
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   const loginForm = document.getElementById("loginForm");
   const responseMessage = document.getElementById("responseMessage");
@@ -12,6 +26,17 @@ document.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
+  // Focus event for email field
+  document.getElementById("Email").addEventListener("focus", function () {
+    speak("Please enter your email address.");
+  });
+
+  // Focus event for password field
+  document.getElementById("Password").addEventListener("focus", function () {
+    speak("Please enter your password.");
+  });
+
+  // Submit event for form submission
   loginForm.addEventListener("submit", async function (event) {
     event.preventDefault(); // Prevent default form submission
 
@@ -20,17 +45,21 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (!email || !password) {
       responseMessage.textContent = "Please enter both email and password.";
+      speak("Please enter both email and password.");
       return;
     }
 
     const loginData = { email, password };
 
     try {
-      const response = await fetch("https://localhost:7261/api/UserLog/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(loginData),
-      });
+      const response = await fetch(
+        "https://localhost:7261/api/UserLogin/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(loginData),
+        }
+      );
 
       const responseText = await response.text();
       console.log("Raw Response Text:", responseText);
@@ -47,42 +76,66 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log("Parsed Response Data:", responseData);
 
       if (response.ok) {
+        speak("Login successful! Redirecting...");
         alert("Login successful!");
 
-        // **Ensure user data is correctly stored**
+        // Store user data in localStorage
         if (responseData.userId) {
           localStorage.setItem("userId", responseData.userId);
-        } else {
-          console.warn("Warning: userId is missing in the response.");
         }
 
         if (responseData.userName) {
           localStorage.setItem("userName", responseData.userName);
-        } else {
-          console.warn("Warning: userName is missing in the response.");
         }
 
         if (responseData.email) {
           localStorage.setItem("userEmail", responseData.email);
-        } else {
-          console.warn("Warning: userEmail is missing in the response.");
         }
 
         if (responseData.token) {
           localStorage.setItem("token", responseData.token);
-        } else {
-          console.warn("Warning: token is missing in the response.");
         }
 
-        console.log("Redirecting to Rooms...");
-        window.location.href = "/Rooms.html";
+        localStorage.setItem("userLoggedIn", true); // Set login status
+
+        // Fetch reservations before redirecting
+        const token = responseData.token;
+        const userId = responseData.userId;
+
+        if (token && userId) {
+          const reservationsResponse = await fetch(
+            "https://localhost:7261/api/reservations/my",
+            {
+              method: "GET",
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
+
+          if (reservationsResponse.ok) {
+            const reservations = await reservationsResponse.json();
+            if (reservations.length > 0) {
+              speak("Redirecting to Dashboard...");
+              window.location.href = "/dashboard.html";
+              return;
+            }
+          } else {
+            console.warn(
+              "Failed to fetch reservations. Proceeding with default redirect."
+            );
+          }
+        }
+
+        speak("Redirecting to Rooms page...");
+        window.location.href = "/Rooms.html"; // Default redirect if no reservations
       } else {
         responseMessage.textContent =
           responseData.message || "Login failed, please try again.";
+        speak(responseData.message || "Login failed, please try again.");
       }
     } catch (error) {
       console.error("Error during login:", error);
       alert("Something went wrong. Please try again.");
+      speak("Something went wrong. Please try again.");
     }
   });
 });

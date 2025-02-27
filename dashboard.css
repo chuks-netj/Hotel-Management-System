@@ -1,0 +1,133 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  background: #f5f0ff; /* Light purple tint */
+  color: #333;
+}
+
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(106, 13, 173, 0.2);
+}
+
+h1,
+h2 {
+  color: #6a0dad; /* Deep Purple */
+}
+
+.quick-actions button {
+  margin: 10px;
+  padding: 10px 15px;
+  border: none;
+  background: #6a0dad; /* Purple */
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease-in-out;
+}
+
+.quick-actions button:hover {
+  background: #530b9b; /* Darker Purple */
+}
+
+/* Chatbox */
+#chatContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(106, 13, 173, 0.3);
+  border: 2px solid #6a0dad;
+}
+
+#chatMessages {
+  height: 150px;
+  overflow-y: auto;
+  border: 1px solid #6a0dad;
+  padding: 5px;
+  margin-bottom: 5px;
+  border-radius: 5px;
+  background: #f9f5ff;
+}
+
+#chatInput {
+  width: 70%;
+  padding: 5px;
+  border: 1px solid #6a0dad;
+  border-radius: 5px;
+}
+
+#sendChat {
+  width: 25%;
+  background: #6a0dad;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background 0.3s ease-in-out;
+}
+
+#sendChat:hover {
+  background: #530b9b;
+}
+/* Logout Button */
+/* Stylish Logout Button */
+/* Stylish Logout Button */
+#logout {
+  background: linear-gradient(135deg, #6a0dad, #530b9b); /* Purple Gradient */
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease-in-out;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  box-shadow: 0 4px 10px rgba(106, 13, 173, 0.3);
+  z-index: 999;
+}
+
+/* Hover Effect */
+#logout:hover {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #530b9b, #6a0dad); /* Reverse Gradient */
+  box-shadow: 0 6px 15px rgba(106, 13, 173, 0.5);
+}
+
+/* Logout Icon */
+#logout::before {
+  content: "🚪"; /* Exit Door Emoji */
+  font-size: 18px;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  #logout {
+    padding: 10px 15px;
+    font-size: 14px;
+    right: 10px;
+    top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  #logout {
+    padding: 8px 12px;
+    font-size: 12px;
+    right: 10px;
+    top: 10px;
+  }
+}
