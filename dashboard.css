@@ -1,37 +1,92 @@
+/* General Styles */
 body {
-  font-family: Arial, sans-serif;
+  font-family: "Poppins", sans-serif;
   text-align: center;
-  background: #f5f0ff; /* Light purple tint */
-  color: #333;
+  background: #1a1a2e;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
 }
 
 .container {
   max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0px 4px 15px rgba(106, 13, 173, 0.2);
+  padding: 30px;
+  background: #2d1b49;
+  border-radius: 16px;
+  box-shadow: 0 0 20px rgba(162, 155, 254, 0.4);
+  transition: transform 0.3s ease-in-out;
 }
 
-h1,
-h2 {
-  color: #6a0dad; /* Deep Purple */
+.container:hover {
+  transform: scale(1.02);
+}
+
+h1 {
+  color: #a29bfe;
+  font-size: 26px;
+  font-weight: bold;
+}
+
+/* Buttons */
+button {
+  margin: 10px;
+  padding: 12px 18px;
+  border: none;
+  background: linear-gradient(135deg, #6a0dad, #9b59b6);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #530b9b, #6a0dad);
+  transform: translateY(-3px);
+}
+
+/* Logout Button */
+#logout {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 12px 20px;
+  font-size: 14px;
+  border-radius: 30px;
+  box-shadow: 0 4px 10px rgba(162, 155, 254, 0.4);
+  z-index: 999;
+}
+
+#logout:hover {
+  transform: scale(1.1);
+}
+
+/* Chat Button */
+#openChat {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 30px;
+  box-shadow: 0 4px 10px rgba(162, 155, 254, 0.3);
+}
+
+/* Quick Actions */
+.quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .quick-actions button {
-  margin: 10px;
-  padding: 10px 15px;
-  border: none;
-  background: #6a0dad; /* Purple */
-  color: white;
-  cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s ease-in-out;
-}
-
-.quick-actions button:hover {
-  background: #530b9b; /* Darker Purple */
+  flex: 1;
+  min-width: 180px;
 }
 
 /* Chatbox */
@@ -39,95 +94,78 @@ h2 {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  width: 300px;
-  background: white;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 15px rgba(106, 13, 173, 0.3);
-  border: 2px solid #6a0dad;
+  width: 320px;
+  background: #322653;
+  padding: 15px;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(162, 155, 254, 0.4);
+  border: 2px solid #6c5ce7;
 }
 
 #chatMessages {
-  height: 150px;
+  height: 180px;
   overflow-y: auto;
-  border: 1px solid #6a0dad;
-  padding: 5px;
-  margin-bottom: 5px;
-  border-radius: 5px;
-  background: #f9f5ff;
+  padding: 10px;
+  border-radius: 8px;
+  background: #3b2c5e;
+  color: #ffffff;
 }
 
 #chatInput {
-  width: 70%;
-  padding: 5px;
-  border: 1px solid #6a0dad;
-  border-radius: 5px;
+  width: 75%;
+  padding: 8px;
+  border: none;
+  border-radius: 6px;
+  background: #322653;
+  color: white;
 }
 
 #sendChat {
-  width: 25%;
-  background: #6a0dad;
-  color: white;
+  width: 20%;
+  background: #a29bfe;
   border: none;
   cursor: pointer;
-  border-radius: 5px;
-  transition: background 0.3s ease-in-out;
+  border-radius: 6px;
 }
 
 #sendChat:hover {
-  background: #530b9b;
+  background: #6c5ce7;
 }
-/* Logout Button */
-/* Stylish Logout Button */
-/* Stylish Logout Button */
-#logout {
-  background: linear-gradient(135deg, #6a0dad, #530b9b); /* Purple Gradient */
-  color: white;
-  border: none;
-  padding: 12px 20px;
-  font-size: 16px;
+
+/* Forgot Password Link */
+#forgotPasswordLink {
+  color: #a29bfe;
   font-weight: bold;
-  cursor: pointer;
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.3s ease-in-out;
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  box-shadow: 0 4px 10px rgba(106, 13, 173, 0.3);
-  z-index: 999;
+  text-decoration: none;
+  transition: color 0.3s;
 }
 
-/* Hover Effect */
-#logout:hover {
-  transform: scale(1.1);
-  background: linear-gradient(135deg, #530b9b, #6a0dad); /* Reverse Gradient */
-  box-shadow: 0 6px 15px rgba(106, 13, 173, 0.5);
-}
-
-/* Logout Icon */
-#logout::before {
-  content: "🚪"; /* Exit Door Emoji */
-  font-size: 18px;
+#forgotPasswordLink:hover {
+  color: #6c5ce7;
+  text-decoration: underline;
 }
 
 /* Responsiveness */
 @media (max-width: 768px) {
-  #logout {
-    padding: 10px 15px;
+  .container {
+    padding: 20px;
+  }
+
+  #logout,
+  #openChat {
     font-size: 14px;
-    right: 10px;
-    top: 10px;
+    padding: 10px 15px;
   }
 }
 
 @media (max-width: 480px) {
-  #logout {
-    padding: 8px 12px;
+  .container {
+    max-width: 90%;
+  }
+
+  #logout,
+  #openChat {
     font-size: 12px;
-    right: 10px;
-    top: 10px;
+    padding: 8px 12px;
   }
 }

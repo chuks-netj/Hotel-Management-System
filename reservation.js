@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     // Text-to-Speech feedback (only if enabled)
     speak(
-      `Room type: ${room.roomType}. Price per night: $${room.price}. Available Spaces: ${room.capacity}. Total price: $${totalPrice}. Check-in-Date: ${checkInDate}. Check-out-Date: ${checkOutDate}`
+      `Room type: ${room.roomType}. Price per night: $${room.price}. Available Spaces: ${room.capacity}. Total price: #${totalPrice}. Check-in-Date: ${checkInDate}. Check-out-Date: ${checkOutDate}`
     );
   } catch (error) {
     console.error("Error loading room details:", error);

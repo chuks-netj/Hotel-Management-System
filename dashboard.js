@@ -17,8 +17,9 @@ document.addEventListener("DOMContentLoaded", async function () {
     // Ensure user is logged in
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
+    const userName = localStorage.getItem("userName");
 
-    if (!token || !userId) {
+    if (!token || !userId || !userName) {
       alert("User not logged in");
       speak("User not logged in. Redirecting to login page.");
       window.location.href = "login.html";
@@ -40,16 +41,17 @@ document.addEventListener("DOMContentLoaded", async function () {
       `https://localhost:7261/api/UserProfile/${userId}`,
       {
         headers: { Authorization: `Bearer ${token}` },
+        // headers: { Authorization: `Bearer ${userId}` },
       }
     );
 
     if (userResponse.ok) {
       const userData = await userResponse.json();
-      userNameElement.innerText = userData.userName || "User";
-      speak(`Welcome, ${userData.userName || "User"}`);
+      userNameElement.innerText = userData.userName || "";
+      speak(`Welcome, ${userData.userName || ""}`);
     } else {
       console.warn("Failed to fetch user profile");
-      userNameElement.innerText = "User";
+      userNameElement.innerText = "";
     }
 
     // Fetch user reservations

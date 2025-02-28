@@ -34,7 +34,7 @@ async function fetchAvailableRooms() {
         <div class="room">
             <h3>${room.roomType}</h3>
             <p>Available Spaces: <span id="spaces-${room.roomId}">${room.capacity}</span></p>
-            <p>Price per night: $${room.price}</p>
+            <p>Price per night: #${room.price}</p>
 
             <label for="CheckInDate-${room.roomId}">Check-in Date:</label>
             <input type="date" id="CheckInDate-${room.roomId}" min="${today}">
