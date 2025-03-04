@@ -3,21 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Moonlit Retreats</title>
+    <title>Welcome</title>
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
     <div class="container">
       <h1>Welcome to Moonlit Retreats</h1>
-      <p>Experience luxury, comfort, and tranquility under the moonlight.</p>
-
-      <div class="buttons">
-        <button id="registerButton">Register</button>
-        <button id="loginButton">Login</button>
-      </div>
+      <p>Are you visually impaired? (Select below)</p>
+      <button onclick="setAccessibilityPreference(true)">
+        Yes, Enable ReadAloud
+      </button>
+      <button onclick="setAccessibilityPreference(false)">
+        No, Disable ReadAloud
+      </button>
     </div>
 
     <script src="index.js"></script>
-    <!-- External JS file -->
   </body>
 </html>
